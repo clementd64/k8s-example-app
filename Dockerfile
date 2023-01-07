@@ -4,7 +4,7 @@ COPY . .
 ENV CGO_ENABLED=0
 RUN go build -o /app/main .
 
-FROM scratch
+FROM alpine:latest
 LABEL org.opencontainers.image.source=https://github.com/clementd64/k8s-example-app
 COPY --from=builder /app/main /main
 ENTRYPOINT ["/main"]
