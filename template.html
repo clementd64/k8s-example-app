@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>example app</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style>
+			body {
+				font-family: sans-serif;
+				max-width: 40em;
+				margin: 0 auto;
+				padding: 1em;
+			}
+		</style>
+	</head>
+
+	<body>
+		<h1>{{ .Title }}</h1>
+		<p>Hostname: <code>{{ .Hostname }}</code></p>
+		{{ if .IsStandalone }}
+			<p>Run in standalone mode</p>
+		{{ else }}
+			<form action="/add" method="post">
+				<input type="text" name="message">
+				<input type="submit" value="Add">
+			</form>
+			<ul>
+				{{ range $message := .Messages }}
+					<li>{{ $message }}</li>
+				{{ end }}
+			</ul>
+			<a href="/clear"><button>Clear Messages</button></a>
+		{{ end }}
+	</body>
+</html>
