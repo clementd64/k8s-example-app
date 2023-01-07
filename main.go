@@ -16,6 +16,7 @@ import (
 //go:embed template.html
 var templatePage string
 var page *template.Template
+var title string = "Hello World"
 
 type TemplateData struct {
 	Title        string
@@ -28,7 +29,7 @@ func createStandalone() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		page.Execute(w, TemplateData{
-			Title:        "Hello World",
+			Title:        title,
 			IsStandalone: true,
 			Hostname:     getHostname(),
 		})
@@ -88,7 +89,7 @@ func createDatabase(dsn string) {
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		page.Execute(w, TemplateData{
-			Title:        "Hello World",
+			Title:        title,
 			IsStandalone: false,
 			Hostname:     getHostname(),
 			Messages:     messages,
@@ -98,7 +99,16 @@ func createDatabase(dsn string) {
 
 func main() {
 	addr := flag.String("addr", ":8080", "server address")
+	titleFile := flag.String("title-file", "", "title file")
 	flag.Parse()
+
+	if *titleFile != "" {
+		data, err := os.ReadFile(*titleFile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		title = string(data)
+	}
 
 	page = template.Must(template.New("page").Parse(templatePage))
 
