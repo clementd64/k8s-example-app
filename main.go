@@ -38,12 +38,12 @@ func createStandalone() {
 func createDatabase(dsn string) {
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	_, err = db.Exec("CREATE TABLE IF NOT EXISTS message (data text)")
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	http.HandleFunc("/add", func(w http.ResponseWriter, r *http.Request) {
@@ -109,7 +109,10 @@ func main() {
 		createDatabase(dsn)
 	}
 
-	http.ListenAndServe(*addr, nil)
+	log.Print("Listening on " + *addr)
+	if err := http.ListenAndServe(*addr, nil); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func getHostname() string {
